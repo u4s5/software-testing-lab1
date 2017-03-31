@@ -1,10 +1,17 @@
 package math;
 
 import org.junit.Test;
-import org.junit.runners.Parameterized.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(Parameterized.class)
 public class ArcSinBoundaryTest {
 
     private final static double delta = 1e-2;
@@ -18,33 +25,36 @@ public class ArcSinBoundaryTest {
     @Parameter(3)
     public String testName;
 
-    @Test
-    public void endPointsTesting() {
-        assertEquals("Testing x=1", Functions.arcsin(1), 1.57, delta);
-        assertEquals("Testing x=1-delta", Functions.arcsin(1 - delta), 1.43, delta);
-        assertEquals("Testing x=1+delta", Functions.arcsin(1 + delta), Double.NaN, delta);
+    @Parameters(name = "{index}) {3}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+                {1, 1.57, "Testing x=1", "End Points Testing"},
+                {1 - delta, 1.43, "Testing x=1-delta", "End Points Testing"},
+                {1 + delta, Double.NaN, "Testing x=1+delta", "End Points Testing"},
 
-        assertEquals("Testing x=-1", Functions.arcsin(-1), -1.57, delta);
-        assertEquals("Testing x=-1-delta", Functions.arcsin(-1 - delta), Double.NaN, delta);
-        assertEquals("Testing x=-1+delta", Functions.arcsin(-1 + delta), -1.43, delta);
+                {-1, -1.57, "Testing x=-1", "End Points Testing"},
+                {-1 - delta, Double.NaN, "Testing x=-1-delta", "End Points Testing"},
+                {-1 + delta, -1.43, "Testing x=-1+delta", "End Points Testing"},
+
+
+                {0, 0, "Testing x=0", "Null Point Testing"},
+                {0 - delta, -0.01, "Testing x=0-delta", "Null Point Testing"},
+                {0 + delta, 0.01, "Testing x=0+delta", "Null Point Testing"},
+
+
+                {0.6, 0.64, "Testing x=0.6", "Middle Points Testing"},
+                {0.6 - delta, 0.63, "Testing x=0.6-delta", "Middle Points Testing"},
+                {0.6 + delta, 0.66, "Testing x=0.6+delta", "Middle Points Testing"},
+
+                {-0.6, -0.64, "Testing x=-0.6", "Middle Points Testing"},
+                {-0.6 - delta, -0.66, "Testing x=-0.6-delta", "Middle Points Testing"},
+                {-0.6 + delta, -0.63, "Testing x=-0.6+delta", "Middle Points Testing"},
+        });
     }
 
     @Test
-    public void nullPointTesting() {
-        assertEquals("Testing x=0", Functions.arcsin(0), 0, delta);
-        assertEquals("Testing x=0-delta", Functions.arcsin(0 - delta), -0.01, delta);
-        assertEquals("Testing x=0+delta", Functions.arcsin(0 + delta), 0.01, delta);
-    }
-
-    @Test
-    public void middlePointsTesting() {
-        assertEquals("Testing x=0.6", Functions.arcsin(0.6), 0.64, delta);
-        assertEquals("Testing x=0.6-delta", Functions.arcsin(0.6 - delta), 0.63, delta);
-        assertEquals("Testing x=0.6+delta", Functions.arcsin(0.6 + delta), 0.66, delta);
-
-        assertEquals("Testing x=-0.6", Functions.arcsin(-0.6), -0.64, delta);
-        assertEquals("Testing x=-0.6-delta", Functions.arcsin(-0.6 - delta), -0.66, delta);
-        assertEquals("Testing x=-0.6+delta", Functions.arcsin(-0.6 + delta), -0.63, delta);
+    public void testCase() {
+        assertEquals(failMsg, expectedResult, Functions.arcsin(arg), delta);
     }
 
 }
